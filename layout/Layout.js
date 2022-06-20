@@ -1,13 +1,27 @@
+import Modal from "react-modal"
 import Head from "next/head"
 import Sidebar from "../components/Sidebar"
-
+import ModalProducto from "../components/ModalProducto"
+import useKiosco from "../hooks/useKiosco"
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+}
+Modal.setAppElement("#__next")
 const Layout = ({ children, pagina }) => {
+  const { modal, handleSetModal, producto } = useKiosco()
+
   return (
     <>
       <Head>
-        <title>Chebu-San - {pagina}</title>
-        <meta name="description" content={pagina} />
-        <link rel="icon" href="/favicon.ico" />
+        <title>{`Chebu-San - ${pagina}`}</title>
+        <meta name="description" content="" />
       </Head>
       <div className="flex">
         <aside className="md:w-4/12 xl:w-1/4 2xl:w-1/5 h-screen overflow-hidden bg-red-300">
@@ -17,8 +31,22 @@ const Layout = ({ children, pagina }) => {
           {children}
         </main>
       </div>
+
+      {modal && (
+        <Modal
+          isOpen={modal}
+          style={customStyles}
+          onRequestClose={handleSetModal}
+        >
+          <ModalProducto producto={producto} />
+        </Modal>
+      )}
     </>
   )
+}
+
+Layout.defaultProps = {
+  pagina: "",
 }
 
 export default Layout

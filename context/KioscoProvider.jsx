@@ -8,13 +8,20 @@ const KioscoProvider = ({ children }) => {
     ================================================================*/
   const [categorias, setCategorias] = useState([])
   const [catActual, setCatActual] = useState({})
-
+  const [producto, setProducto] = useState({})
+  const [modal, setModal] = useState(false)
   /*================================================================
                    Funciones
     ================================================================*/
   const handleChangeCat = (id) => {
     const categoria = categorias.filter((c) => c.id === id)
     setCatActual(categoria[0])
+  }
+  const handleShowProd = (prod) => {
+    setProducto(prod)
+  }
+  const handleSetModal = () => {
+    setModal(!modal)
   }
   /*================================================================
                    Async Funciones
@@ -39,6 +46,10 @@ const KioscoProvider = ({ children }) => {
         categorias,
         handleChangeCat,
         catActual,
+        producto,
+        handleShowProd,
+        modal,
+        handleSetModal,
       }}
     >
       {children}

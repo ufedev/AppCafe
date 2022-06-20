@@ -1,8 +1,16 @@
 import Image from "next/image"
 import { formatearPrecio } from "../helpers"
+import useKiosco from "../hooks/useKiosco"
 const Producto = ({ producto }) => {
+  const { handleShowProd, handleSetModal } = useKiosco()
   return (
-    <div className="p-5 border">
+    <div
+      className="p-5 border hover:cursor-pointer hover:bg-red-100"
+      onClick={() => {
+        handleShowProd(producto)
+        handleSetModal()
+      }}
+    >
       <div className="mx-auto">
         <Image
           width={400}
