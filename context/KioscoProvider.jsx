@@ -13,7 +13,7 @@ const KioscoProvider = ({ children }) => {
   const [producto, setProducto] = useState({})
   const [modal, setModal] = useState(false)
   const [pedido, setPedido] = useState([])
-  const [pasoActual, setPasoActual] = useState(1)
+
   /*================================================================
                    Funciones
     ================================================================*/
@@ -27,7 +27,7 @@ const KioscoProvider = ({ children }) => {
   const handleSetModal = () => {
     setModal(!modal)
   }
-  const handleSetPedido = ({ categoriaId, imagen, ...producto }) => {
+  const handleSetPedido = ({ categoriaId, ...producto }) => {
     if (pedido.some((p) => p.id === producto.id)) {
       setPedido(
         pedido.map((prod) => (prod.id === producto.id ? producto : prod))
@@ -57,8 +57,18 @@ const KioscoProvider = ({ children }) => {
     setModal(false)
   }
 
-  const handleChangePaso = (paso) => {
-    setPasoActual(paso)
+  const handleEditarProdPedido = (id) => {
+    const prod = pedido.find((p) => p.id === id)
+    setProducto(prod)
+    setModal(true)
+  }
+  const handleEliminarProdPedido = (id) => {
+    const alerta = confirm("Desea Eliminar este producto de su lista")
+    console.log(alerta)
+    if (alerta) {
+      const pedidoActualizado = pedido.filter((prod) => prod.id !== id)
+      setPedido(pedidoActualizado)
+    }
   }
   /*================================================================
                    Async Funciones
@@ -94,8 +104,8 @@ const KioscoProvider = ({ children }) => {
         handleSetModal,
         handleSetPedido,
         pedido,
-        pasoActual,
-        handleChangePaso,
+        handleEditarProdPedido,
+        handleEliminarProdPedido,
       }}
     >
       {children}
