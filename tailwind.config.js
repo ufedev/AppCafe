@@ -8,7 +8,11 @@ module.exports = {
     "./layout/**/*.js",
   ],
   theme: {
-    extend: {},
+    extend: {
+      width: {
+        128: "50rem",
+      },
+    },
   },
   plugins: [],
 }

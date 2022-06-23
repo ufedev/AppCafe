@@ -1,8 +1,11 @@
 import Modal from "react-modal"
 import Head from "next/head"
 import Sidebar from "../components/Sidebar"
+import Pasos from "../components/Pasos"
 import ModalProducto from "../components/ModalProducto"
 import useKiosco from "../hooks/useKiosco"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 const customStyles = {
   content: {
     top: "50%",
@@ -28,6 +31,7 @@ const Layout = ({ children, pagina }) => {
           <Sidebar />
         </aside>
         <main className="md:w-8/12 xl:w-3/4 2xl:w-4/5 h-screen overflow-y-scroll">
+          <Pasos />
           {children}
         </main>
       </div>
@@ -41,6 +45,7 @@ const Layout = ({ children, pagina }) => {
           <ModalProducto producto={producto} />
         </Modal>
       )}
+      <ToastContainer />
     </>
   )
 }

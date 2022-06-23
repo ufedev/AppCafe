@@ -11,7 +11,7 @@ const Producto = ({ producto }) => {
         handleSetModal()
       }}
     >
-      <div className="mx-auto">
+      <div className="flex justify-center flex-col items-center">
         <Image
           width={400}
           height={500}

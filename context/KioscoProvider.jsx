@@ -1,4 +1,6 @@
 import { useState, useEffect, createContext } from "react"
+import { toast } from "react-toastify"
+
 import axios from "axios"
 const KioscoContext = createContext()
 
@@ -10,6 +12,8 @@ const KioscoProvider = ({ children }) => {
   const [catActual, setCatActual] = useState({})
   const [producto, setProducto] = useState({})
   const [modal, setModal] = useState(false)
+  const [pedido, setPedido] = useState([])
+  const [pasoActual, setPasoActual] = useState(1)
   /*================================================================
                    Funciones
     ================================================================*/
@@ -22,6 +26,39 @@ const KioscoProvider = ({ children }) => {
   }
   const handleSetModal = () => {
     setModal(!modal)
+  }
+  const handleSetPedido = ({ categoriaId, imagen, ...producto }) => {
+    if (pedido.some((p) => p.id === producto.id)) {
+      setPedido(
+        pedido.map((prod) => (prod.id === producto.id ? producto : prod))
+      )
+      toast.success("Pedido modificado Correctamente", {
+        position: "top-right",
+        autoClose: 800,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+    } else {
+      setPedido([...pedido, producto])
+      toast.success("Producto Agregado", {
+        position: "top-right",
+        autoClose: 800,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+    }
+
+    setModal(false)
+  }
+
+  const handleChangePaso = (paso) => {
+    setPasoActual(paso)
   }
   /*================================================================
                    Async Funciones
@@ -40,6 +77,11 @@ const KioscoProvider = ({ children }) => {
   useEffect(() => {
     setCatActual(categorias[0])
   }, [categorias])
+
+  /*================================================================
+                    Return 
+    ================================================================*/
+
   return (
     <KioscoContext.Provider
       value={{
@@ -50,6 +92,10 @@ const KioscoProvider = ({ children }) => {
         handleShowProd,
         modal,
         handleSetModal,
+        handleSetPedido,
+        pedido,
+        pasoActual,
+        handleChangePaso,
       }}
     >
       {children}
