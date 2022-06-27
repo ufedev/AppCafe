@@ -1,38 +1,63 @@
+import { useEffect, useCallback } from "react"
 import Layout from "../layout/Layout"
 import useKiosco from "../hooks/useKiosco"
 import { formatearPrecio } from "../helpers"
 export default function Total() {
-  const { pedido } = useKiosco()
-  const total = pedido.reduce((total, prod) => {
-    const subtotal = prod.precio * prod.cantidad
+  const { pedido, total, name, handleEnviarPedido, setName } = useKiosco()
+  const comprobarPedido = useCallback(() => {
+    return pedido.length > 0 && name !== "" && name.length >= 3
+  }, [pedido, name])
 
-    return total + subtotal
-  }, 0)
-
+  useEffect(() => {
+    comprobarPedido()
+  }, [name, pedido, comprobarPedido])
   return (
     <Layout pagina="Total">
       <div className="p-10">
         <h1 className="text-5xl font-bold">Total del pedido</h1>
         <p className="my-10 text-xl">Confirme su Pedido a continuación</p>
       </div>
-      {pedido.length <= 0 ? (
-        <h3 className="text-xl font-bold text-center">
-          No hay elementos en su pedido
-        </h3>
-      ) : (
-        <div className="text-center font-bold flex flex-col gap-5 justify-center items-center">
-          <h3 className="text-3xl">Total de su pedido</h3>
-          <p className="text-4xl font-black text-amber-500">
-            {formatearPrecio(total)}
-          </p>
-          <button
-            type="button"
-            className="text-white bg-indigo-700 px-5 py-2 mt-5 rounded"
-          >
-            Enviar Pedido
-          </button>
+
+      <form onSubmit={handleEnviarPedido}>
+        <div className="p-5">
+          <div>
+            <label
+              htmlFor="nombre"
+              className="font-bold uppercase text-xl block "
+            >
+              Nombre:
+            </label>
+
+            <input
+              className="bg-slate-300 w-full lg:w-1/3 py-2 px-5 rounded my-5"
+              type="text"
+              name="nombre"
+              id="nombre"
+              onChange={(e) => {
+                setName(e.target.value)
+              }}
+              value={name}
+            />
+          </div>
+          {comprobarPedido() && (
+            <>
+              <p className="text-2xl">Total de su pedido</p>
+              <p className="text-4xl font-black text-amber-500">
+                {formatearPrecio(total)}
+              </p>
+            </>
+          )}
+          <input
+            type="submit"
+            className={`text-white px-5 py-2 mt-5 rounded ${
+              !comprobarPedido()
+                ? "bg-indigo-100"
+                : "bg-indigo-700 hover:bg-indigo-600 cursor-pointer"
+            }`}
+            value="Enviar Pedido"
+          />
         </div>
-      )}
+      </form>
     </Layout>
   )
 }

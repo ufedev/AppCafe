@@ -1,10 +1,11 @@
 import { useState, useEffect, createContext } from "react"
 import { toast } from "react-toastify"
-
+import { useRouter } from "next/router"
 import axios from "axios"
 const KioscoContext = createContext()
 
 const KioscoProvider = ({ children }) => {
+  const router = useRouter()
   /*================================================================
                     useStates 
     ================================================================*/
@@ -13,13 +14,33 @@ const KioscoProvider = ({ children }) => {
   const [producto, setProducto] = useState({})
   const [modal, setModal] = useState(false)
   const [pedido, setPedido] = useState([])
+  const [total, setTotal] = useState(0)
+  const [name, setName] = useState("")
+  /*================================================================
+                    useEffects 
+    ================================================================*/
+  useEffect(() => {
+    obtenerCategorias()
+  }, [])
+  useEffect(() => {
+    setCatActual(categorias[0])
+  }, [categorias])
 
+  useEffect(() => {
+    const precioFinal = pedido.reduce((total, prod) => {
+      const subtotal = prod.precio * prod.cantidad
+
+      return total + subtotal
+    }, 0)
+    setTotal(precioFinal)
+  }, [pedido])
   /*================================================================
                    Funciones
     ================================================================*/
   const handleChangeCat = (id) => {
     const categoria = categorias.filter((c) => c.id === id)
     setCatActual(categoria[0])
+    router.push("/")
   }
   const handleShowProd = (prod) => {
     setProducto(prod)
@@ -70,6 +91,7 @@ const KioscoProvider = ({ children }) => {
       setPedido(pedidoActualizado)
     }
   }
+
   /*================================================================
                    Async Funciones
     ================================================================*/
@@ -77,16 +99,31 @@ const KioscoProvider = ({ children }) => {
     const { data } = await axios("/api/categorias")
     setCategorias(data)
   }
+  const handleEnviarPedido = async (e) => {
+    e.preventDefault()
 
-  /*================================================================
-                    useEffects 
-    ================================================================*/
-  useEffect(() => {
-    obtenerCategorias()
-  }, [])
-  useEffect(() => {
-    setCatActual(categorias[0])
-  }, [categorias])
+    try {
+      const { data } = await axios.post("/api/ordenes", {
+        total,
+        name,
+        pedido,
+        fecha: Date.now().toString(),
+      })
+      //Resetear APP
+      setCatActual(categorias[0])
+
+      setPedido([])
+      setTotal(0)
+      setName("")
+
+      toast.success("pedido realizado")
+      setTimeout(() => {
+        router.push("/")
+      }, 1500)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   /*================================================================
                     Return 
@@ -106,6 +143,10 @@ const KioscoProvider = ({ children }) => {
         pedido,
         handleEditarProdPedido,
         handleEliminarProdPedido,
+        total,
+        name,
+        setName,
+        handleEnviarPedido,
       }}
     >
       {children}
