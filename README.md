@@ -10,4 +10,4 @@ Una aplicación realizada en NextJs junto con Prisma y Mysql. Es casi 100% **Js*
 
 ---
 
-Este proyecto y muchos mas podes encontrar en GitHub con el código. :grin:
+Este proyecto y muchos mas podes encontrar aca en GitHub. :grin:
